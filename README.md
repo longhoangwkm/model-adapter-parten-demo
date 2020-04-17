@@ -1,27 +1,70 @@
-# ModelAdapterPartenDemo
+# The Model-Adapter Pattern with Angular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.1.
+API Data -> Adapter -> Model > App
 
-## Development server
+### JSON API data:
+- https://jsonplaceholder.typicode.com
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```
+[
+  {
+    "userId": 1,
+    "id": 1,
+    "title": "quidem molestiae enim"
+  },
+  {
+    "userId": 1,
+    "id": 2,
+    "title": "sunt qui excepturi placeat culpa"
+  }
+]
+```
 
-## Code scaffolding
+### Adapter
+```
+export class AlbumService {
+  private baseUrl = "https://jsonplaceholder.typicode.com/albums";
+  constructor(private http: HttpClient) {}
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+  list(): Observable<Album[]> {
+    const url = this.baseUrl;
+    return this.http.get<any[]>(url).pipe(
+      map(data => data.map(Album.adapt))
+    );
+  }
+}
 
-## Build
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+### Model
 
-## Running unit tests
+```
+export class Album {
+  constructor(
+    public userId: number,
+    public id: number,
+    public title: string,
+  ) {}
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+  static adapt(item: any): Album {
+    return new Album(
+      item.id,
+      item.userId,
+      item.title,
+    );
+  }
+}
+```
+### Setup 
 
-## Running end-to-end tests
+```
+npm install  @angular/cli
+ng server
+```
+- Access localhost:4200
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+### References: 
+- https://dev.to/florimondmanca/consuming-apis-in-angular--the-model-adapter-pattern-3fk5
+- https://guides.emberjs.com/release/models/
+- https://angular.io/guide/dependency-injection
+- http://json2ts.com/
