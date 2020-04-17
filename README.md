@@ -21,7 +21,7 @@ API Data -> Adapter -> Model > App
 ```
 
 ### Adapter
-```
+```typescript
 export class AlbumService {
   private baseUrl = "https://jsonplaceholder.typicode.com/albums";
   constructor(private http: HttpClient) {}
@@ -38,7 +38,7 @@ export class AlbumService {
 
 ### Model
 
-```
+```typescript
 export class Album {
   constructor(
     public userId: number,
